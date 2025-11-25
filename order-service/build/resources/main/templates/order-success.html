@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 완료</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container my-5 text-center">
+    <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+        <div class="card-header bg-success text-white">
+            <h3 class="my-2">🎉 주문이 성공적으로 완료되었습니다!</h3>
+        </div>
+        <div class="card-body">
+
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+            <p class="lead mt-3">고객님의 주문 내역이 정상적으로 접수되었습니다.</p>
+
+            <div th:object="${summary}" class="text-start mt-4 p-3 border rounded bg-light">
+                <h5 class="mb-3">주문 요약</h5>
+                <ul class="list-unstyled">
+                    <li><strong>주문 번호:</strong> <span th:text="*{orderId}">1002</span></li>
+                    <li><strong>주문 일시:</strong> <span th:text="*{#temporals.format(orderDate, 'yyyy-MM-dd HH:mm')}">2025-11-25 16:00</span></li>
+                    <li><strong>총 결제 금액:</strong> <span class="fw-bold text-primary" th:text="${#numbers.formatCurrency(summary.totalAmount)}">18,500원</span></li>
+                    <li><strong>주문 상태:</strong> <span th:text="*{status}">결제 완료</span></li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <a href="/" class="btn btn-outline-secondary me-2">메인으로 돌아가기</a>
+                <a th:href="@{'/mypage/orders/' + *{orderId}}" class="btn btn-primary">주문 상세 보기</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
