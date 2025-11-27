@@ -7,9 +7,7 @@ import com.example.product.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 // 맵핑을 위한 Map, List, Stream 임포트 추가
 import java.util.List;
@@ -71,6 +69,19 @@ public class MenuController {
         }
 
         return "menu-list";
+    }
+    @GetMapping("/api/menu/{menuCode}/options")
+    @ResponseBody // Map을 JSON 형태로 반환합니다.
+    public Map<String, List<OptionDto>> getMenuOptions(@PathVariable String menuCode) {
+
+        // 1. Service를 통해 해당 메뉴 코드에 허용된 옵션 그룹의 상세 옵션을 모두 가져옵니다.
+        List<OptionDto> filteredOptions = menuService.getOptionsByMenuCode(menuCode);
+
+        // 2. 결과를 옵션 그룹 이름으로 Map핑하여 JSON 형태로 반환합니다.
+        Map<String, List<OptionDto>> optionsByGroup = filteredOptions.stream()
+                .collect(Collectors.groupingBy(OptionDto::getOptionGroupName));
+
+        return optionsByGroup;
     }
 
 }

@@ -3,6 +3,8 @@ package com.example.product.repository;
 
 import com.example.product.model.OptionMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Collection;
 import java.util.List;
 
 public interface OptionMasterRepository extends JpaRepository<OptionMaster, Long> {
@@ -12,4 +14,6 @@ public interface OptionMasterRepository extends JpaRepository<OptionMaster, Long
      */
     List<OptionMaster> findByOptionName(String optionName);
     List<OptionMaster> findByOptionGroupName(String optionGroupName);
+
+    List<OptionMaster> findByOptionGroupNameIn(Collection<String> optionGroupNames);
 }

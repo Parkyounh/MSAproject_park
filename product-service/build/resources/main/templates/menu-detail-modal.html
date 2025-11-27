@@ -28,43 +28,20 @@
                             <h5 class="fw-bold mb-3">옵션 선택</h5>
 
                             <div id="optionsContainer">
-                                <div th:each="entry : ${optionsByGroup}" class="mb-4">
-
-                                    <h6 class="fw-bold border-bottom pb-1" th:text="${entry.key}">옵션 그룹명</h6>
-
-                                    <div th:each="option : ${entry.value}" class="form-check ps-0">
-
-                                        <input class="form-check-input option-input"
-                                               type="checkbox"
-                                               th:name="${entry.key}"
-                                               th:id="'option_' + ${option.optionId}"
-                                               th:value="${option.optionId}"
-                                               th:data-price-delta="${option.getPriceDelta()}"
-                                               onchange="updateTotalPriceDisplay()">
-
-                                        <label class="form-check-label w-100 d-flex justify-content-between align-items-center"
-                                               th:for="'option_' + ${option.optionId}">
-
-                                            <span th:text="${option.optionName}">옵션 상세 이름</span>
-
-                                            <span th:if="${option.getPriceDelta() > 0}"
-                                                  class="text-success fw-bold"
-                                                  th:text="'+' + ${#numbers.formatDecimal(option.getPriceDelta(), 0, 'COMMA', 0, 'POINT')} + '원'">
-                                                (+추가금)
-                                            </span>
-                                            <span th:if="${option.getPriceDelta() == 0 and option.optionName.contains('제외')}"
-                                                  class="text-muted">
-                                                (0원)
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
                             </div>
 
                             <h5 class="fw-bold mt-4 mb-3">수량 선택</h5>
                             <div class="d-flex align-items-center mb-4">
                                 <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(-1)">-</button>
-                                <input type="number" id="modalQuantity" value="1" min="1" class="form-control text-center mx-2" style="width: 80px;" onchange="updateTotalPriceDisplay()">
+
+                                <input type="number"
+                                       id="modalQuantity"
+                                       value="1"
+                                       min="1"
+                                       class="form-control text-center mx-2"
+                                       style="width: 80px;"
+                                       onchange="updateTotalPriceDisplay()">
+
                                 <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(1)">+</button>
                             </div>
                         </form>
