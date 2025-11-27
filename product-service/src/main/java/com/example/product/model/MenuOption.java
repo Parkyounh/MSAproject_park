@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "menu_option")
+@Table(name = "menu_option") // 실제 테이블 이름에 따라 조정 가능
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,13 +16,15 @@ public class MenuOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Menu 엔티티의 ID를 참조
-    @Column(name = "menu_id", nullable = false)
-    private Long menuId;
+    //Menu Entity의 PK (menu_code: String)를 저장
+    @Column(name = "menu_code", length = 10, nullable = false)
+    private String menuCode;
 
-    // OptionMaster 엔티티의 ID를 참조
-    @Column(name = "option_id", nullable = false)
-    private Long optionId;
+    //OptionMaster의 옵션 그룹 이름 (String)을 저장
+    @Column(name = "option_group_name", length = 50, nullable = false)
+    private String optionGroupName;
 
-    // 추가 필드: 해당 옵션이 필수인지 선택인지 등을 정의할 수 있습니다.
+//    // 추가 필드: 해당 옵션이 필수인지 선택인지 등을 정의 가능 - 안쓸듯
+//    @Column(name = "is_required")
+//    private Boolean isRequired; 
 }
