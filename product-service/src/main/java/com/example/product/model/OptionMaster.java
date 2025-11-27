@@ -16,9 +16,10 @@ public class OptionMaster {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "option_id")
     private Integer id; // option_id (PK, auto_increment)에 매핑
 
-    // 🌟 요청하신 옵션 그룹 이름 추가
+    //그룹 이름 추가
     @Column(name = "option_group_name", length = 50, nullable = true) // DB 스키마: YES
     private String optionGroupName;
 
