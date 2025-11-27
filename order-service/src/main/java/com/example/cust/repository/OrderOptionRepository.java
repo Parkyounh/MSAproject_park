@@ -1,4 +1,7 @@
 package com.example.cust.repository;
 
-public interface OrderOptionRepository {
+import com.example.cust.model.OrderOption;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderOptionRepository extends JpaRepository<OrderOption, Long> {
 }

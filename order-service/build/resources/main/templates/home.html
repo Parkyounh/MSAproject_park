@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 주문 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container my-5">
+    <h2 class="mb-4">메인 메뉴 및 주문 테스트</h2>
+
+    <a href="/orders/cart" class="btn btn-info mb-4">🛒 장바구니 보기</a>
+
+    <div class="card p-4 shadow-sm">
+        <h5 class="card-title">단일 상품 주문 테스트</h5>
+        <p>아래 버튼을 누르면 지정된 테스트 데이터가 장바구니에 추가됩니다.</p>
+
+        <button id="addTestCartItem" class="btn btn-warning btn-lg">
+            테스트 항목 장바구니 추가 (T-001, 1개, 샷/바닐라 시럽)
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById('addTestCartItem').addEventListener('click', addToCartAndRedirect);
+
+    function addToCartAndRedirect() {
+        // 1. 요청하신 테스트 데이터
+        const cartItemData = {
+            menuCode: "T-001",
+            quantity: 1,
+            options: ["샷추가(+600)", "바닐라시럽추가(+500)"]
+        };
+
+        console.log("전송할 테스트 장바구니 데이터:", cartItemData);
+
+        // 2. 서버로 POST 요청 전송
+        fetch('/orders/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // JSON.stringify로 데이터를 문자열화하여 전송
+            body: JSON.stringify(cartItemData),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    // 4xx, 5xx 에러 처리
+                    return response.json().then(err => {
+                        throw new Error(err.message || '장바구니 추가 실패')
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 3. 성공 시 장바구니 페이지로 리다이렉트
+                alert(`✅ 테스트 항목이 장바구니에 추가되었습니다! 장바구니 페이지로 이동합니다.`);
+                window.location.href = '/orders/cart';
+            })
+            .catch(error => {
+                // 4. 에러 발생 시 알림
+                console.error("장바구니 추가 오류:", error);
+                alert(`❌ 장바구니 추가 중 오류가 발생했습니다: ${error.message}`);
+            });
+    }
+</script>
+</body>
+</html>
