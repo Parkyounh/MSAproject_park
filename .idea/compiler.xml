@@ -18,6 +18,24 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="MSAproject_park.cust-service" options="-parameters" />
+      <module name="MSAproject_park.cust-service.main" options="-parameters" />
+      <module name="MSAproject_park.cust-service.test" options="-parameters" />
+      <module name="MSAproject_park.eureka-server" options="-parameters" />
+      <module name="MSAproject_park.eureka-server.main" options="-parameters" />
+      <module name="MSAproject_park.eureka-server.test" options="-parameters" />
+      <module name="MSAproject_park.gateway-service" options="-parameters" />
+      <module name="MSAproject_park.gateway-service.main" options="-parameters" />
+      <module name="MSAproject_park.gateway-service.test" options="-parameters" />
+      <module name="MSAproject_park.member-service" options="-parameters" />
+      <module name="MSAproject_park.member-service.main" options="-parameters" />
+      <module name="MSAproject_park.member-service.test" options="-parameters" />
+      <module name="MSAproject_park.order-service" options="-parameters" />
+      <module name="MSAproject_park.order-service.main" options="-parameters" />
+      <module name="MSAproject_park.order-service.test" options="-parameters" />
+      <module name="MSAproject_park.product-service" options="-parameters" />
+      <module name="MSAproject_park.product-service.main" options="-parameters" />
+      <module name="MSAproject_park.product-service.test" options="-parameters" />
       <module name="sb3_msa3.cust-service" options="-parameters" />
       <module name="sb3_msa3.cust-service.main" options="-parameters" />
       <module name="sb3_msa3.cust-service.test" options="-parameters" />

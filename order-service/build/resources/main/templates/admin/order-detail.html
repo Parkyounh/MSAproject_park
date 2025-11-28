@@ -5,7 +5,7 @@
 <div class="container mt-5" th:if="${order}">
     <h2 th:text="|주문 상세 (#${order.orderId})|">주문 상세 (#1)</h2>
     <p>상태: <strong th:text="${order.status}">결제 완료</strong></p>
-    <p>총 금액: <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + '원'}">10,600원</strong></p>
+    <p>총 금액: <strong th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT') + '원'}">10,500원</strong></p>
 
     <h3>주문 항목</h3>
     <table class="table">
