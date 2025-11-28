@@ -5,7 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders") // SQL 예약어와 겹칠 수 있으므로 @Table 명시
@@ -30,12 +32,12 @@ public class Orders {
     @Column(name = "customer_id")
     private Integer customerId; // 고객 테이블의 FK
 
+    @Enumerated(EnumType.STRING) // 💡 [수정] Enum 타입으로 변경
     @Column(name = "status", length = 20)
-    private String status;
+    private OrderStatus status;
 
     // 연관 관계: Orders(1) <-> OrderItem(N)
-    // 주문이 삭제되면 항목도 같이 삭제 (Cascade)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private Set<OrderItem> orderItems = new HashSet<>(); // 💡 [수정] List -> Set, ArrayList -> HashSet
 }

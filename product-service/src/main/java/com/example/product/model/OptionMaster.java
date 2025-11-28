@@ -26,7 +26,7 @@ public class OptionMaster {
     @Column(name = "option_name", length = 100, nullable = false) // DB 스키마: NO
     private String optionName;
 
-    @Column(name = "default_price", nullable = false) // DB 스키마: yes
+    @Column(name = "default_price", nullable = true) // 💡 nullable = false 대신 nullable = true로 잠시 변경
     private Integer defaultPrice; // int 타입 매핑
 
     @Column(name = "changing_material", length = 100, nullable = true) // DB 스키마: YES
@@ -42,17 +42,12 @@ public class OptionMaster {
     private String processMethod;
 
 
-    // 💡 Service에서 DTO로 변환하기 위한 헬퍼 메서드를 Entity에 추가하는 것이 일반적입니다.
     public OptionDto toDto() {
-        return new OptionDto(
-                this.id, // Long -> Integer로 변환 (OptionDto에 맞춤)
-                this.optionGroupName,
-                this.optionName,
-                this.defaultPrice,
-                this.changingMaterial,
-                this.quantity,
-                this.unit,
-                this.processMethod
-        );
+        return OptionDto.builder()
+                .optionId(this.id) // Integer
+                .optionName(this.optionName) // String
+                .optionPrice(this.defaultPrice)
+                .optionGroupName(this.optionGroupName) // String
+                .build();
     }
 }

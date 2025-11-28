@@ -40,4 +40,28 @@ public class CartItem {
     @OneToMany(mappedBy = "cartItem", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CartOption> cartOptions = new ArrayList<>();
+
+    public void setCartOptions(List<CartOption> cartOptions) {
+        this.cartOptions = cartOptions;
+        // 💡 양방향 관계 설정 (핵심!)
+        for (CartOption option : cartOptions) {
+            option.setCartItem(this);
+        }
+    }
+
+    public Integer getTotalItemPrice() {
+        // 1. 단가 * 수량
+        int basePrice = this.unitPrice * this.quantity;
+
+        // 2. 옵션 가격 총합 계산 (옵션이 null이거나 비어있을 경우 0 처리)
+        int optionPrice = 0;
+        if (this.cartOptions != null && !this.cartOptions.isEmpty()) {
+            // CartOption 엔티티의 optionPrice 필드 (기존 필드)를 사용한다고 가정
+            optionPrice = this.cartOptions.stream()
+                    .mapToInt(CartOption::getOptionPrice)
+                    .sum();
+        }
+
+        return basePrice + optionPrice;
+    }
 }

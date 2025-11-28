@@ -1,71 +1,102 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>메인 주문 페이지</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <style>
+        .fixed-bottom-right {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .item-info { width: 40%; }
+        .item-price { text-align: right; }
+        .summary-row { text-align: right; }
+    </style>
 </head>
 <body>
 
-<div class="container my-5">
-    <h2 class="mb-4">메인 메뉴 및 주문 테스트</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">🛒 장바구니 Before</h2>
+    <hr>
 
-    <a href="/orders/cart" class="btn btn-info mb-4">🛒 장바구니 보기</a>
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
-    <div class="card p-4 shadow-sm">
-        <h5 class="card-title">단일 상품 주문 테스트</h5>
-        <p>아래 버튼을 누르면 지정된 테스트 데이터가 장바구니에 추가됩니다.</p>
+    <table class="table align-middle">
+        <thead>
+        <tr>
+            <th class="item-info">상품정보</th>
+            <th>수량</th>
+            <th>단가 (옵션 제외)</th>
+            <th>옵션 추가 금액</th>
+            <th class="item-price">총 가격</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${cartItems}">
+            <td class="item-info">
+                <strong th:text="${item.menuCode}">COF-001</strong>
+                <div class="small text-muted mt-1">
+                        <span th:each="option : ${item.cartOptions}" class="me-2">
+                            + <span th:text="${option.optionId}">2</span> (<span th:text="${#numbers.formatDecimal(option.optionPrice, 0, 'COMMA', 0, 'POINT')} + '원'">500원</span>)
+                        </span>
+                    <span th:if="${#lists.isEmpty(item.cartOptions)}">옵션 없음</span>
+                </div>
+            </td>
 
-        <button id="addTestCartItem" class="btn btn-warning btn-lg">
-            테스트 항목 장바구니 추가 (T-001, 1개, 샷/바닐라 시럽)
-        </button>
+            <td th:text="${item.quantity}">1</td>
+
+            <td th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT') + '원'}">2,500원</td>
+
+            <td th:with="totalOptionPrice=${#aggregates.sum(item.cartOptions.![optionPrice]) ?: 0}"
+                th:text="${#numbers.formatDecimal(totalOptionPrice, 0, 'COMMA', 0, 'POINT') + '원'}">1,100원</td>
+
+            <td class="item-price"
+                th:with="itemTotal=${(item.unitPrice * item.quantity) + (#aggregates.sum(item.cartOptions.![optionPrice]) ?: 0)}"
+                th:text="${#numbers.formatDecimal(itemTotal, 0, 'COMMA', 0, 'POINT') + '원'}">3,600원</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <div class="row justify-content-end mt-4">
+        <div class="col-md-4">
+            <div th:with="grandTotal=${#aggregates.sum(cartItems.![ (unitPrice * quantity) + (#aggregates.sum(cartOptions.![optionPrice]) ?: 0) ])}">
+
+                <div class="row summary-row mb-2">
+                    <div class="col-6 text-end">상품 금액</div>
+                    <div class="col-6">
+                        <strong th:text="${#numbers.formatDecimal(grandTotal ?: 0, 0, 'COMMA', 0, 'POINT') + '원'}">10,600원</strong>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row summary-row fs-5">
+                    <div class="col-6 text-end">결제 금액</div>
+                    <div class="col-6 text-danger">
+                        <strong th:text="${#numbers.formatDecimal(grandTotal ?: 0, 0, 'COMMA', 0, 'POINT') + '원'}">10,600원</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div class="fixed-bottom-right">
+    <form th:action="@{/orders/place}" method="post">
+        <button type="submit" class="btn btn-primary btn-lg shadow">
+            주문하기 (결제 진행)
+        </button>
+    </form>
+</div>
 
-<script>
-    document.getElementById('addTestCartItem').addEventListener('click', addToCartAndRedirect);
-
-    function addToCartAndRedirect() {
-        // 1. 요청하신 테스트 데이터
-        const cartItemData = {
-            menuCode: "T-001",
-            quantity: 1,
-            options: ["샷추가(+600)", "바닐라시럽추가(+500)"]
-        };
-
-        console.log("전송할 테스트 장바구니 데이터:", cartItemData);
-
-        // 2. 서버로 POST 요청 전송
-        fetch('/orders/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            // JSON.stringify로 데이터를 문자열화하여 전송
-            body: JSON.stringify(cartItemData),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    // 4xx, 5xx 에러 처리
-                    return response.json().then(err => {
-                        throw new Error(err.message || '장바구니 추가 실패')
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                // 3. 성공 시 장바구니 페이지로 리다이렉트
-                alert(`✅ 테스트 항목이 장바구니에 추가되었습니다! 장바구니 페이지로 이동합니다.`);
-                window.location.href = '/orders/cart';
-            })
-            .catch(error => {
-                // 4. 에러 발생 시 알림
-                console.error("장바구니 추가 오류:", error);
-                alert(`❌ 장바구니 추가 중 오류가 발생했습니다: ${error.message}`);
-            });
-    }
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

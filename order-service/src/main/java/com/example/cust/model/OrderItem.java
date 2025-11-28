@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "order_item")
@@ -40,5 +42,5 @@ public class OrderItem {
     // 연관 관계: OrderItem(1) <-> OrderOption(N)
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<OrderOption> orderOptions = new ArrayList<>();
+    private Set<OrderOption> orderOptions = new HashSet<>(); // 💡 [수정] List -> Set, ArrayList -> HashSet
 }

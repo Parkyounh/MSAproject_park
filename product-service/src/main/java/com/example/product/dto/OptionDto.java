@@ -1,47 +1,23 @@
 package com.example.product.dto;
+// 혹은 order-service에서도 동일한 구조로 정의
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.math.BigDecimal; // Decimal 타입 매핑을 위해 추가
+import java.math.BigDecimal;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OptionDto {
 
-    // 1. option_id (Entity의 id 필드)
-    private Integer optionId;
+    // 1. 옵션 식별자 (OptionMaster.id)
+    private Integer optionId;     // 옵션 ID (option_id)
 
-    // 2. option_group_name
-    private String optionGroupName;
+    // 2. 옵션 이름 (사용자에게 표시/저장)
+    private String optionName;    // 옵션 이름 (option_name)
 
-    // 3. option_name
-    private String optionName;
+    private Integer optionPrice; // 옵션 가격 (option_price)
 
-    // 4. default_price
-    private Integer defaultPrice;
-
-    // 5. changing_material
-    private String changingMaterial;
-
-    // 6. quantity
-    private BigDecimal quantity;
-
-    // 7. unit
-    private String unit;
-
-    // 8. process_method
-    private String processMethod;
-
-
-    // 헬퍼 메서드: 가격 변동분이 필요할 경우 사용 (현재 DTO에 price 필드가 없으므로 defaultPrice 사용)
-    public int getPriceDelta() {
-        // 옵션의 추가 가격 필드(price)가 Entity에 없으므로,
-        // 임시로 defaultPrice를 추가 가격으로 가정하고 반환합니다.
-        return (this.defaultPrice != null) ? this.defaultPrice : 0;
-    }
+    private String optionGroupName; // 옵션 그룹 이름
 }

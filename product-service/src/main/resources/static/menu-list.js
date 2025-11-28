@@ -1,4 +1,4 @@
-// static/menu-list.js 수정 (전체 코드)
+// static/menu-list.js (수정 완료)
 
 let menuDetailModalInstance = null;
 let currentMenuBasePrice = 0;
@@ -38,10 +38,22 @@ function renderOptions(optionsByGroup) {
 
             // 개별 옵션 루프
             options.forEach(option => {
-                const priceDelta = option.priceDelta || 0;
-                const priceText = priceDelta > 0
-                    ? `+${formatNumber(priceDelta)}원`
-                    : (option.optionName && option.optionName.includes('제외') ? '(0원)' : '(0원)');
+                // 1. 가격 데이터를 숫자로 확실히 변환
+                const optionPrice = Number(option.optionPrice) || 0;
+
+                // 2. 가격 표시 문자열 생성 로직 수정: optionPrice를 직접 사용
+                let priceText;
+
+                if (optionPrice > 0) {
+                    // 가격이 0원 초과일 경우: +600원 형태로 표시
+                    priceText = `+${formatNumber(optionPrice)}원`;
+                } else if (option.optionName === '텀블러 이용' || option.optionName === '시럽 제외') {
+                    // 텀블러 이용, 시럽 제외 등 0원인데 표시해야 하는 경우
+                    priceText = '(0원)';
+                } else {
+                    // 그 외 (안전 장치)
+                    priceText = '(0원)';
+                }
 
                 html += `<div class="form-check ps-0">
                             <input class="form-check-input option-input" 
@@ -49,12 +61,12 @@ function renderOptions(optionsByGroup) {
                                    name="${groupName}" 
                                    id="option_${option.optionId}" 
                                    value="${option.optionId}"
-                                   data-price-delta="${priceDelta}"
+                                   data-price-delta="${optionPrice}"  
                                    onchange="updateTotalPriceDisplay()">
                             <label class="form-check-label w-100 d-flex justify-content-between align-items-center" 
                                    for="option_${option.optionId}">
                                 <span>${option.optionName}</span>
-                                <span class="text-success fw-bold">${priceText}</span>
+                                <span class="text-success fw-bold">${priceText}</span> 
                             </label>
                         </div>`;
             });
@@ -134,6 +146,7 @@ function updateTotalPriceDisplay() {
     let totalPrice = currentMenuBasePrice;
 
     document.querySelectorAll('.option-input:checked').forEach(checkbox => {
+        // data-price-delta에 저장된 옵션 가격을 가져와 합산
         const priceDelta = parseInt(checkbox.getAttribute('data-price-delta')) || 0;
         totalPrice += priceDelta;
     });
