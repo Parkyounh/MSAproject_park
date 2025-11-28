@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
@@ -21,12 +22,16 @@
 <body>
 
 <div class="container mt-5">
-    <h2 class="mb-4">🛒 장바구니 Before</h2>
+    <h2 class="mb-4">🛒 장바구니</h2>
     <hr>
 
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
-    <table class="table align-middle">
+    <div th:if="${#lists.isEmpty(cartItems)}" class="alert alert-info text-center">
+        장바구니에 상품이 없습니다.
+    </div>
+
+    <table th:if="${!#lists.isEmpty(cartItems)}" class="table align-middle">
         <thead>
         <tr>
             <th class="item-info">상품정보</th>
@@ -39,11 +44,11 @@
         <tbody>
         <tr th:each="item : ${cartItems}">
             <td class="item-info">
-                <strong th:text="${item.menuCode}">COF-001</strong>
+                <strong th:text="${item.menuName}">메뉴 이름</strong>
                 <div class="small text-muted mt-1">
-                        <span th:each="option : ${item.cartOptions}" class="me-2">
-                            + <span th:text="${option.optionId}">2</span> (<span th:text="${#numbers.formatDecimal(option.optionPrice, 0, 'COMMA', 0, 'POINT')} + '원'">500원</span>)
-                        </span>
+                    <span th:each="option : ${item.cartOptions}" class="me-2">
+                        + <span th:text="${option.optionName}">옵션 이름</span>
+                    </span>
                     <span th:if="${#lists.isEmpty(item.cartOptions)}">옵션 없음</span>
                 </div>
             </td>
@@ -56,17 +61,16 @@
                 th:text="${#numbers.formatDecimal(totalOptionPrice, 0, 'COMMA', 0, 'POINT') + '원'}">1,100원</td>
 
             <td class="item-price"
-                th:with="itemTotal=${(item.unitPrice * item.quantity) + (#aggregates.sum(item.cartOptions.![optionPrice]) ?: 0)}"
-                th:text="${#numbers.formatDecimal(itemTotal, 0, 'COMMA', 0, 'POINT') + '원'}">3,600원</td>
+                th:text="${#numbers.formatDecimal(item.getTotalItemPrice(), 0, 'COMMA', 0, 'POINT') + '원'}">3,600원</td>
         </tr>
         </tbody>
     </table>
 
-    <hr>
+    <hr th:if="${!#lists.isEmpty(cartItems)}">
 
-    <div class="row justify-content-end mt-4">
+    <div th:if="${!#lists.isEmpty(cartItems)}" class="row justify-content-end mt-4">
         <div class="col-md-4">
-            <div th:with="grandTotal=${#aggregates.sum(cartItems.![ (unitPrice * quantity) + (#aggregates.sum(cartOptions.![optionPrice]) ?: 0) ])}">
+            <div th:with="grandTotal=${cartItems != null ? #aggregates.sum(cartItems.![getTotalItemPrice()]) : 0}">
 
                 <div class="row summary-row mb-2">
                     <div class="col-6 text-end">상품 금액</div>
@@ -89,7 +93,7 @@
     </div>
 </div>
 
-<div class="fixed-bottom-right">
+<div th:if="${!#lists.isEmpty(cartItems)}" class="fixed-bottom-right">
     <form th:action="@{/orders/place}" method="post">
         <button type="submit" class="btn btn-primary btn-lg shadow">
             주문하기 (결제 진행)

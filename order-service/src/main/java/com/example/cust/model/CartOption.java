@@ -17,6 +17,9 @@ public class CartOption {
     @Column(name = "cart_option_id")
     private Integer cartOptionId;
 
+    @Column(name = "option_name", length = 50, nullable = false) // 💡 [추가] 옵션 이름 필드
+    private String optionName;
+
     // 연관 관계: CartOption(N) <-> CartItem(1)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_item_id", nullable = false)

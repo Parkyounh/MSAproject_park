@@ -16,6 +16,7 @@ public class ProductItemDto { //임시로 쓸듯
 
     // 메뉴 기본 정보
     private String menuCode;
+    private String menuName;
     private Integer quantity;
     private Integer unitPrice; // 메뉴 기본 가격 (unit_price)
 

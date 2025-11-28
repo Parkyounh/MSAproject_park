@@ -23,8 +23,8 @@ public class CartDetailService {
 
     /**
      * [주요 API] 여러 ProductItemDto를 CartItem 및 CartOption 엔티티로 변환하여 DB에 저장합니다.
-     * CartItem에 CascadeType.ALL이 설정되어 있어 CartOption도 함께 저장됩니다.
-     * * @param cartHeader 현재 장바구니 헤더 (CartItem과 연결됨)
+     * 💡 NOT NULL 필드인 menuName 및 optionName 필드에 값을 설정하도록 수정되었습니다.
+     * @param cartHeader 현재 장바구니 헤더 (CartItem과 연결됨)
      * @param productItems 장바구니에 추가할 상품/옵션 리스트
      * @return 저장된 CartItem 엔티티 리스트
      */
@@ -39,6 +39,8 @@ public class CartDetailService {
             CartItem cartItem = CartItem.builder()
                     .cartHeader(cartHeader) // 연관된 CartHeader 설정
                     .menuCode(itemDto.getMenuCode())
+                    // 💡 [수정] menuName 설정 추가
+                    .menuName(itemDto.getMenuName())
                     .quantity(itemDto.getQuantity())
                     .unitPrice(itemDto.getUnitPrice())
                     .build();
@@ -48,17 +50,18 @@ public class CartDetailService {
                     .map(optionDto -> CartOption.builder()
                             .optionId(optionDto.getOptionId())
                             .optionPrice(optionDto.getOptionPrice())
+                            // 💡 [수정] optionName 설정 추가
+                            .optionName(optionDto.getOptionName())
                             .build())
                     .collect(Collectors.toList());
 
-            // 3. CartItem에 CartOption 리스트 연결 및 양방향 관계 설정 (CartItem 엔티티의 편의 메서드에 의존)
-            //    참고: CartItem 엔티티에 setCartOptions(List<CartOption>) 편의 메서드가 정의되어 있어야 합니다.
+            // 3. CartItem에 CartOption 리스트 연결 및 양방향 관계 설정
             cartItem.setCartOptions(cartOptions);
 
             newCartItems.add(cartItem);
         }
 
-        // 4. CartItemRepository를 통해 DB에 저장
+        // 4. CartItemRepository를 통해 DB에 저장 (이 라인이 오류 로그의 62번째 라인일 가능성이 높습니다.)
         return cartItemRepository.saveAll(newCartItems);
     }
 

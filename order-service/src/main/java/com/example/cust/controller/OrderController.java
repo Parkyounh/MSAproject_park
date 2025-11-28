@@ -39,13 +39,13 @@ public class OrderController {
                 OptionDto.builder().optionId(6).optionName("바닐라시럽추가(+500)").optionPrice(500).optionGroupName("당도선택").build()
         );
         ProductItemDto productItem1 = ProductItemDto.builder()
-                .customerId(1L).menuCode("cof-001").quantity(1).unitPrice(2500)
+                .customerId(1L).menuCode("cof-001").menuName("아메리카노").quantity(1).unitPrice(2500)
                 .totalAmount(3600).options(selectedOptions1)
                 .build();
 
         // 2. 임시 데이터 생성: 상품 2 (옵션 없음)
         ProductItemDto productItem2 = ProductItemDto.builder()
-                .customerId(1L).menuCode("ade-001").quantity(2).unitPrice(3500)
+                .customerId(1L).menuCode("ade-001").menuName("청포도에이드").quantity(2).unitPrice(3500)
                 .totalAmount(7000).options(List.of())
                 .build();
 

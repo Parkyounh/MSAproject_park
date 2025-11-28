@@ -22,6 +22,9 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private Integer cartItemId;
 
+    @Column(name = "menu_name", length = 50, nullable = false) // 💡 [추가] 메뉴 이름 필드
+    private String menuName;
+
     // 연관 관계: CartItem(N) <-> CartHeader(1)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
